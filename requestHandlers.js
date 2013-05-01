@@ -1,28 +1,21 @@
 var querystring = require("querystring");
-
-function start(response, postData) {
-  console.log("Request handler 'start' was called.");
-
-  var body = '<html>'+
-    '<head>'+
-    '<meta http-equiv="Content-Type" content="text/html; '+
-    'charset=UTF-8" />'+
-    '</head>'+
-    '<body>'+
-    '<form action="/upload" method="post">'+
-    '<textarea name="text" rows="20" cols="60"></textarea>'+
-    '<input type="submit" value="Submit text" />'+
-    '</form>'+
-    '</body>'+
-    '</html>';
-
-    response.writeHead(200, {"Content-Type": "text/html"});
-    response.write(body);
-    response.end();
+var static = require("node-static");
+var util = require("util");
+var root = "";
+var file = new(static.Server)(root, {
+	cache: 600
+});
+function start(request, response, postData) {
+	file.serve(request, response, function(error, result) {
+		if (error) {
+			console.error("Error serving %s - %s", request.url, error.message);
+		} else {
+			console.log("I'm here");
+		}
+    });
 }
 
-function upload(response, postData) {
-  console.log("Request handler 'upload' was called.");
+function upload(request, response, postData) {
   response.writeHead(200, {"Content-Type": "text/plain"});
   response.write("You've sent: " + querystring.parse(postData).text);
   response.end();
