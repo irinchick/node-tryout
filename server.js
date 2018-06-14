@@ -1,21 +1,10 @@
-var http = require("http");
-var url = require("url");
+var express = require('express');
+var app = express();
+var path = require('path');
 
-function start(route, handle) {
-	function onRequest(request, response) {
-		var postData = "";
-		var pathname = url.parse(request.url).pathname;
-		
-		request.setEncoding("utf8");
+// viewed at http://localhost:8080
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/index.html'));
+});
 
-		request.addListener("data", function(postDataChunk) {
-			postData += postDataChunk;
-		});
-
-		request.addListener("end", function() {
-			route(handle, pathname, request, response, postData);
-		});
-	}
-	http.createServer(onRequest).listen(8888);
-}
-exports.start = start;
+app.listen(8080);
